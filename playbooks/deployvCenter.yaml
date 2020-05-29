@@ -1,0 +1,38 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  vars_files:
+    - ../answerfile.yaml
+  tasks:
+    - name: Check if VCSA is already installed
+      uri:
+        url: https://{{vcenter.ip}}
+        validate_certs: False
+        timeout: 5
+      register: vcenter_check
+      ignore_errors: True
+      failed_when: False
+      no_log: True
+    
+    - name: Copy installation JSON
+      template:
+        src=../templates/embedded_vcsa_on_vcenter.json
+        dest=/tmp/embedded_vcsa_on_vcenter.json
+      when: vcenter_check.status != 200
+
+    - name: Mount vCenter ISO
+      action: mount name='/media' src="{{ vcISO }}" opts=loop fstype=iso9660 state=mounted
+      when: vcenter_check.status != 200
+    
+    - name: Install VCSA
+      command: "./vcsa-deploy install --accept-eula --no-ssl-certificate-verification --acknowledge-ceip /tmp/embedded_vcsa_on_vcenter.json"
+      args:
+        chdir: /media/vcsa-cli-installer/lin64/
+      register: vcdeploy
+      ignore_errors: True
+      when: vcenter_check.status != 200
+
+    - name: Unmount vCenter ISO
+      action: mount name='/media' src="{{ vcISO }}" fstype=iso9660 state=absent
+      when: vcenter_check.status != 200
+

@@ -1,0 +1,15 @@
+---
+# Deploy VCSA
+- import_playbook: playbooks/deployvCenter.yaml
+
+# Configure the vCenter environment
+- import_playbook: playbooks/configurevCenter.yaml
+
+# Configure the Cluster
+- import_playbook: playbooks/configureCluster.yaml
+
+# Configure the Distributed Switch
+- import_playbook: playbooks/configureDistributedSwitch.yaml
+
+# Configure Tags in the environment
+- import_playbook: playbooks/configureTags.yaml

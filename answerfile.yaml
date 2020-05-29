@@ -1,0 +1,88 @@
+
+# VCSA 7.0 ISO Location
+vcISO: '/home/billhill/ansible/iso/VMware-VCSA-all-7.0.0-15952498.iso'
+
+# Existing Lab ESXi host properties
+labESXi:
+  host: 'labesx01.vb.info'
+  user: 'root'
+  password: 'VMware1!'
+  datastore: 'vsanDatastore'
+  
+
+labvcenter:
+  ip: 'labvcenter.vb.info'
+  user: 'administrator@vsphere.local'
+  password: 'VMware1!'
+  datacenter: 'HomeLab'
+  cluster: 'LabCluster1'
+  management_network: '86-Management'
+  datastore: 'vsanDatastore'
+
+# Global properties
+vm_prefix: 'vmug-'
+dns1: '192.168.86.221'
+ntp_server: '0.pool.ntp.org'
+domain: 'vb.info'
+mgmt_network_gw: '192.168.86.1'
+mgmt_network_mask: '255.255.255.0'
+
+vcenter:
+  ip: '192.168.86.190'
+  mask: '24'
+  gw: "{{mgmt_network_gw}}"
+  fqdn: vmugvcenter.{{domain}}
+  vmname: "{{vm_prefix}}-vmugvcenter"
+  thin: True
+  deployment_option: 'tiny'
+  user: 'administrator@vsphere.local'
+  password: 'VMware1!'
+  datacenter: 'VMUG-HomeLab'
+  datastore: '{{ labESXi.datastore }}'
+  domain: 'vsphere.local'
+  ssh_enable: True
+  ceip_enabled: True
+
+
+vds:
+  name: 'vds'
+  mtu: '9000'
+  uplinks: '2'
+  discovery_proto: 'lldp'
+  discovery_operation: 'both'
+  vmotion_pg: 'vMotionPortGroup'
+  vlan_id: "100"
+  num_of_ports: "120"
+  state: "present"
+  portgroup_type: "ephemeral"
+
+cluster:
+  cluster_name: 'VMUGCluster1'
+  enable_ha: 'yes'
+  enable_drs: 'yes'
+  enable_vsan: 'no'
+  drs_default_vm_behavior: 'partiallyAutomated'
+  state: 'present'
+  drs_vmotion_rate: '4'
+
+tags:
+  category_1_name: 'environment'
+  category_1_description: 'Identify which application environment this operates in'
+  category_2_name: 'application'
+  category_2_description: 'Identify which application this belongs to'
+  category_3_name: 'business_owner'
+  category_3_description: 'Identify which business owner has responsibility for this object'
+  category_cardinality: 'multiple'
+  tag_env_prod: "PROD"
+  tag_env_devtest: "DEV/TEST"
+  tag_env_uatpreprod: "UAT/PRE-PROD"
+  tag_app_crm: "CRM"
+  tag_app_ecomm: "E-Commerce"
+  tag_app_customs: "Customs Clearance"
+  tag_app_infrastructure: "Infrastructure"
+  tag_own_marketing: "Marketing"
+  tag_own_operations: "Operations"
+  tag_own_it: "IT"
+
+
+

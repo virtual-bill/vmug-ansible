@@ -1,0 +1,24 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  vars_files:
+    - ../answerfile.yaml
+  tasks:
+    - name: Check if VCSA is already installed
+      uri:
+        url: https://{{vcenter.ip}}
+        validate_certs: False
+        timeout: 5
+      register: vcenter_check
+      ignore_errors: True
+      failed_when: False
+      no_log: True
+
+    - name: Create Datacenter
+      vmware_datacenter:
+        hostname: "{{ vcenter.ip }}"
+        username: "{{ vcenter.user }}"
+        password: "{{ vcenter.password }}"
+        datacenter_name: "{{ vcenter.datacenter }}"
+        state: present
+        validate_certs: False

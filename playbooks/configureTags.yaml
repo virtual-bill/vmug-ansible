@@ -1,0 +1,220 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  vars_files:
+    - ../answerfile.yaml
+  tasks:
+  - name: Create Tag Category 1
+    vmware_category:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      category_name: "{{ tags.category_1_name }}"
+      category_description: "{{ tags.category_1_description }}"
+      category_cardinality: "{{ tags.category_cardinality }}"
+      state: present
+  
+  - name: Create Tag Category 2
+    vmware_category:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      category_name: "{{ tags.category_2_name }}"
+      category_description: "{{ tags.category_2_description }}"
+      category_cardinality: "{{ tags.category_cardinality }}"
+      state: present
+
+  - name: Create Tag Category 3
+    vmware_category:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      category_name: "{{ tags.category_3_name }}"
+      category_description: "{{ tags.category_3_description }}"
+      category_cardinality: "{{ tags.category_cardinality }}"
+      state: present
+
+# Get the Category IDs from the Categories covering 1-3
+  - name: Gather info about tag categories
+    vmware_category_info:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+    delegate_to: localhost
+    register: all_tag_category_info
+
+  - name: Gather category id from given tag category
+    vmware_category_info:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+    delegate_to: localhost
+    register: tag_category_results
+
+# Set Variables/Facts for use with the other activities
+  - set_fact:
+      category_1_id: "{{ item.category_id }}"
+    loop: "{{ tag_category_results.tag_category_info|json_query(query) }}"
+    vars:
+      query: "[?category_name==`{{ tags.category_1_name }}`]"
+
+  - set_fact:
+      category_2_id: "{{ item.category_id }}"
+    loop: "{{ tag_category_results.tag_category_info|json_query(query) }}"
+    vars:
+      query: "[?category_name==`{{ tags.category_2_name }}`]"
+
+  - set_fact:
+      category_3_id: "{{ item.category_id }}"
+    loop: "{{ tag_category_results.tag_category_info|json_query(query) }}"
+    vars:
+      query: "[?category_name==`{{ tags.category_3_name }}`]"
+
+# Create Tags - Environment
+  - name: Create Tag - PROD
+    vmware_tag:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      category_id: "{{ category_1_id }}"
+      tag_name: "{{ tags.tag_env_prod }}"
+      state: present
+    delegate_to: localhost
+
+  - name: Create Tag  - DEV/TEST
+    vmware_tag:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      category_id: "{{ category_1_id }}"
+      tag_name: "{{ tags.tag_env_devtest }}"
+      state: present
+    delegate_to: localhost
+
+  - name: Create Tag - UAT/PRE-PROD
+    vmware_tag:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      category_id: "{{ category_1_id }}"
+      tag_name: "{{ tags.tag_env_uatpreprod }}"
+      state: present
+    delegate_to: localhost
+
+  # Create Tags - Application
+  - name: Create Tag - CRM
+    vmware_tag:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      category_id: "{{ category_2_id }}"
+      tag_name: "{{ tags.tag_app_crm }}"
+      state: present
+    delegate_to: localhost
+
+  - name: Create Tag  - E-Commerce
+    vmware_tag:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      category_id: "{{ category_2_id }}"
+      tag_name: "{{ tags.tag_app_ecomm }}"
+      state: present
+    delegate_to: localhost
+
+  - name: Create Tag - Customs Clearance
+    vmware_tag:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      category_id: "{{ category_2_id }}"
+      tag_name: "{{ tags.tag_app_customs }}"
+      state: present
+    delegate_to: localhost
+
+  - name: Create Tag - Infrastructure
+    vmware_tag:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      category_id: "{{ category_2_id }}"
+      tag_name: "{{ tags.tag_app_infrastructure }}"
+      state: present
+    delegate_to: localhost
+
+  # Create Tags - Business Owners
+  - name: Create Tag - Marketing
+    vmware_tag:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      category_id: "{{ category_3_id }}"
+      tag_name: "{{ tags.tag_own_marketing }}"
+      state: present
+    delegate_to: localhost
+
+  - name: Create Tag  - Operations
+    vmware_tag:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      category_id: "{{ category_3_id }}"
+      tag_name: "{{ tags.tag_own_operations }}"
+      state: present
+    delegate_to: localhost
+
+  - name: Create Tag - IT
+    vmware_tag:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      category_id: "{{ category_3_id }}"
+      tag_name: "{{ tags.tag_own_it }}"
+      state: present
+    delegate_to: localhost
+
+  # Assign tags
+  - name: Assign Tag to DVS
+    vmware_tag_manager:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      tag_names:
+        - "{{ tags.tag_env_prod }}"
+        - "{{ tags.tag_app_infrastructure }}"
+        - "{{ tags.tag_own_it }}"
+      object_name: "{{ vds.name }}"
+      object_type: DistributedVirtualSwitch
+      state: add
+    delegate_to: localhost
+
+  - name: Assign Tag to Cluster
+    vmware_tag_manager: 
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      validate_certs: no
+      tag_names:
+        - "{{ tags.tag_env_prod }}"
+        - "{{ tags.tag_app_infrastructure }}"
+        - "{{ tags.tag_own_it }}"
+      object_name: "{{ cluster.cluster_name }}"
+      object_type: ClusterComputeResource
+      state: add
+    delegate_to: localhost

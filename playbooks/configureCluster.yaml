@@ -1,0 +1,30 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  vars_files:
+    - ../answerfile.yaml
+  tasks:
+  - name: Create Cluster
+    vmware_cluster:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      datacenter_name: "{{ vcenter.datacenter }}"
+      cluster_name: "{{ cluster.cluster_name }}"
+      enable_ha: "{{ cluster.enable_ha }} "
+      enable_drs: "{{ cluster.enable_drs }}"
+      enable_vsan: "{{ cluster.enable_vsan }}"
+      validate_certs: no
+    delegate_to: localhost
+
+  - name: Configure DRS
+    vmware_cluster_drs:
+      hostname: "{{ vcenter.ip }}"
+      username: "{{ vcenter.user }}"
+      password: "{{ vcenter.password }}"
+      datacenter_name: "{{ vcenter.datacenter }}"
+      cluster_name: "{{ cluster.cluster_name }}"
+      drs_default_vm_behavior: "{{ cluster.drs_default_vm_behavior }}"
+      drs_vmotion_rate: "{{ cluster.drs_vmotion_rate }}"
+      validate_certs: no
+    delegate_to: localhost

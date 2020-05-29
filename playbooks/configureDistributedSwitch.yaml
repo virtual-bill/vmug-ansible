@@ -1,0 +1,33 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  vars_files:
+    - ../answerfile.yaml
+  tasks:
+    - name: Create distributed switch in vCenter
+      vmware_dvswitch:
+        hostname: "{{ vcenter.ip }}"
+        username: "{{ vcenter.user }}"
+        password: "{{ vcenter.password }}"
+        datacenter_name: "{{ vcenter.datacenter }}"
+        validate_certs: false
+        switch_name: "{{ vds.name }}"
+        uplink_quantity: "{{ vds.uplinks }}"
+        mtu: "{{ vds.mtu }}"
+      delegate_to: localhost
+  
+    - name: Configure DVS Portgroup
+      vmware_dvs_portgroup: 
+        hostname: "{{ vcenter.ip }}"
+        username: "{{ vcenter.user }}"
+        password: "{{ vcenter.password }}"
+        validate_certs: false
+        switch_name: "{{ vds.name }}"
+        portgroup_name: "{{ vds.vmotion_pg }}"
+        vlan_id: "{{ vds.vlan_id }}"
+        num_ports: "{{ vds.num_of_ports }}"
+        state: "{{ vds.state }}"
+        validate_certs: no
+        portgroup_type: "{{ vds.portgroup_type }}"
+      delegate_to: localhost
+

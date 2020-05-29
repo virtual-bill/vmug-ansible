@@ -1,0 +1,9 @@
+---
+# Configure the vCenter environment
+- import_playbook: playbooks/configurevCenter.yaml
+
+# Configure the Cluster
+- import_playbook: playbooks/configureCluster.yaml
+
+# Configure the Distributed Switch
+- import_playbook: playbooks/configureDistributedSwitch.yaml
