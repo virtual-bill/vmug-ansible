@@ -22,3 +22,6 @@ See Ansible documentation for more help here: https://docs.ansible.com/ansible/l
 Unless you are running my lab in your environment (highly unlikely), you will need to make some adjustments to the code. 
 * answerfile.yaml: run through and change environment-specific settings (vCenter connection info, IP addresses, naming conventions, credentials, etc...)
 * iso/: copy the .ISO(s) you wish to leverage in the environment. Be sure to update the answerfile.yaml with the appropriate ISO name(s).
+
+## Presentation
+The slide presentation is included in this repository under the **content** directory. 
