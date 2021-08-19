@@ -4,7 +4,7 @@
 The code in this repository was used for development and execution of a VMware User Group session. While the code worked in my lab environment, **YOU** are responsible for understanding the code and how you leverage it in your environment(s).
 
 ## Introduction
-As part of the VMUG 2020 season, I developed a session called **Automating vSphere with Ansible**. The content from the sessions is a combination of:
+As part of the VMUG 2020/2021 season, I developed a session called **Automating vSphere with Ansible**. The content from the sessions is a combination of:
 1. Slide Presentation intro, overview, and session checkpoints. 
 1. Ansible code to use in a lab environment. 
 1. Lab environment to run the Ansible code
