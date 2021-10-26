@@ -6,14 +6,14 @@ vcISO: '/home/billhill/ansible/iso/VMware-VCSA-all-7.0.0-15952498.iso'
 labESXi:
   host: 'labesx01.vb.info'
   user: 'root'
-  password: 'VMware1!'
+  password: '<hostpassword>'
   datastore: 'vsanDatastore'
   
 
 labvcenter:
   ip: 'labvcenter.vb.info'
   user: 'administrator@vsphere.local'
-  password: 'VMware1!'
+  password: '<vcenterpassword>'
   datacenter: 'HomeLab'
   cluster: 'LabCluster1'
   management_network: '86-Management'
@@ -36,7 +36,7 @@ vcenter:
   thin: True
   deployment_option: 'tiny'
   user: 'administrator@vsphere.local'
-  password: 'VMware1!'
+  password: '<vcenterpassword>'
   datacenter: 'VMUG-HomeLab'
   datastore: '{{ labESXi.datastore }}'
   domain: 'vsphere.local'
